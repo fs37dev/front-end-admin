@@ -12,10 +12,10 @@ function Login() {
     password: "",
   };
 
-  
+  const state = useSelector((state) => state.user);
 
-  const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [loading, setLoading] = useState(state.loading);
+  const [errorMessage, setErrorMessage] = useState(state.errorMessage);
   const [loginObj, setLoginObj] = useState(INITIAL_LOGIN_OBJ);
 
   const dispatch = useDispatch();
@@ -36,6 +36,10 @@ function Login() {
     setErrorMessage("");
     setLoginObj({ ...loginObj, [updateType]: value });
   };
+
+  useEffect(() => {
+    setErrorMessage(state.errorMessage);
+  }, [state]);
 
   return (
     <div className="min-h-screen bg-base-200 flex items-center">

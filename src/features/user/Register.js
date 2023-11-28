@@ -42,10 +42,6 @@ function Register() {
     setErrorMessage(state.errorMessage);
   }, [state]);
 
-  if (!errorMessage == state.errorMessage) {
-    window.location.href = "/login";
-  }
-
   return (
     <div className="min-h-screen bg-base-200 flex items-center">
       <div className="card mx-auto w-full max-w-5xl  shadow-xl">

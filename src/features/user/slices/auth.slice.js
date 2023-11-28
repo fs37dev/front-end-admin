@@ -19,8 +19,12 @@ export const registerUser = createAsyncThunk("registerUser", async (registerObj)
 });
 
 export const loginUser = createAsyncThunk("loginUser", async (loginObj) => {
-  const res = await axios.post(`${API_URL}login`, JSON.stringify(loginObj));
-  return await res.json();
+  try {
+    const response = await axios.post(API_URL + "login", loginObj);
+    return await response.data;
+  } catch (err) {
+    return await err.response.data;
+  }
 });
 
 const authSlice = createSlice({
@@ -47,28 +51,29 @@ const authSlice = createSlice({
           state.errorMessage = action.payload.message;
         } else {
           state.errorMessage = "";
+          window.location.href = "/login";
         }
       })
       .addCase(registerUser.rejected, (state) => {
         state.loading = true;
+      })
+      .addCase(loginUser.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(loginUser.fulfilled, (state, action) => {
+        state.loading = false;
+        if (action.payload.status == "error") {
+          state.errorMessage = action.payload.message;
+        } else {
+          state.errorMessage = "";
+          state.token = action.payload.data.access_token;
+          localStorage.setItem("token", action.payload.data.access_token);
+          window.location.href = "/app/reservation";
+        }
+      })
+      .addCase(loginUser.rejected, (state) => {
+        state.loading = true;
       });
-    //   //   login user
-    //   .addCase(loginUser.pending, (state, action) => {
-    //     state.loading = true;
-    //   })
-    //   .addCase(loginUser.fulfilled, (state, { payload: { status, message, access_token } }) => {
-    //     state.loading = false;
-    //     if (status == "error") {
-    //       state.error = status;
-    //     } else {
-    //       state.message = message;
-    //       state.token = access_token;
-    //       localStorage.setItem("token", access_token);
-    //     }
-    //   })
-    //   .addCase(loginUser.rejected, (state) => {
-    //     state.loading = true;
-    //   });
   },
 });
 
