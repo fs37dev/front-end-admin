@@ -37,7 +37,7 @@ function App() {
           <Route path="/app/*" element={<Layout />} />
 
           {/* Navigation guard */}
-          <Route path="*" element={<Navigate to={token ? "/app/welcome" : "/login"} replace />}/>
+          <Route path="*" element={<Navigate to={token ? "/app/reservation" : "/login"} replace />}/>
         </Routes>
       </Router>
     </>

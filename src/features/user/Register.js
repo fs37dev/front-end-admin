@@ -1,41 +1,46 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import LandingIntro from "./LandingIntro";
 import ErrorText from "../../components/Typography/ErrorText";
 import InputText from "../../components/Input/InputText";
+import { useDispatch, useSelector } from "react-redux";
+import { registerUser } from "./slices/auth.slice";
 
 function Register() {
   const INITIAL_REGISTER_OBJ = {
     name: "",
+    email: "",
     password: "",
-    emailId: "",
   };
 
-  const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  const state = useSelector((state) => state.user);
+
+  const [loading, setLoading] = useState(state.loading);
+  const [errorMessage, setErrorMessage] = useState(state.errorMessage);
   const [registerObj, setRegisterObj] = useState(INITIAL_REGISTER_OBJ);
 
+  const dispatch = useDispatch();
   const submitForm = (e) => {
     e.preventDefault();
     setErrorMessage("");
 
     if (registerObj.name.trim() === "") return setErrorMessage("Name is required! (use any value)");
-    if (registerObj.emailId.trim() === "") return setErrorMessage("Email Id is required! (use any value)");
+    if (registerObj.email.trim() === "") return setErrorMessage("Email is required! (use any value)");
     if (registerObj.password.trim() === "") return setErrorMessage("Password is required! (use any value)");
     else {
       setLoading(true);
-      // Call API to check user credentials and save token in localstorage
+      dispatch(registerUser(registerObj));
       setLoading(false);
-      // window.location.href = '/login'
     }
   };
 
   const updateFormValue = ({ updateType, value }) => {
-    setErrorMessage("");
     setRegisterObj({ ...registerObj, [updateType]: value });
   };
 
-  console.log(registerObj);
+  useEffect(() => {
+    setErrorMessage(state.errorMessage);
+  }, [state]);
 
   return (
     <div className="min-h-screen bg-base-200 flex items-center">
@@ -51,10 +56,11 @@ function Register() {
                 <InputText defaultValue={registerObj.name} updateType="name" containerStyle="mt-4" labelTitle="Name" updateFormValue={updateFormValue} />
 
                 <InputText
-                  defaultValue={registerObj.emailId}
-                  updateType="emailId"
+                  type="email"
+                  defaultValue={registerObj.email}
+                  updateType="email"
                   containerStyle="mt-4"
-                  labelTitle="Email Id"
+                  labelTitle="Email"
                   updateFormValue={updateFormValue}
                 />
 
