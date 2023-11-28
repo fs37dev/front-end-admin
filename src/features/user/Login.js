@@ -4,19 +4,21 @@ import LandingIntro from "./LandingIntro";
 import ErrorText from "../../components/Typography/ErrorText";
 import InputText from "../../components/Input/InputText";
 import { useDispatch, useSelector } from "react-redux";
-import { loginUser } from "./redux/loginSlice";
+import { loginUser } from "./slices/auth.slice";
 
 function Login() {
-  const dispatch = useDispatch();
   const INITIAL_LOGIN_OBJ = {
     email: "",
     password: "",
   };
 
+  
+
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [loginObj, setLoginObj] = useState(INITIAL_LOGIN_OBJ);
 
+  const dispatch = useDispatch();
   const submitForm = (e) => {
     e.preventDefault();
     setErrorMessage("");
@@ -34,12 +36,6 @@ function Login() {
     setErrorMessage("");
     setLoginObj({ ...loginObj, [updateType]: value });
   };
-
-  const message = useSelector((state) => state.login.message);
-
-  useEffect(() => {
-    setErrorMessage(message);
-  }, [message]);
 
   return (
     <div className="min-h-screen bg-base-200 flex items-center">

@@ -4,20 +4,22 @@ import LandingIntro from "./LandingIntro";
 import ErrorText from "../../components/Typography/ErrorText";
 import InputText from "../../components/Input/InputText";
 import { useDispatch, useSelector } from "react-redux";
-import { registerUser } from "./redux/registerSlice";
+import { registerUser } from "./slices/auth.slice";
 
 function Register() {
-  const dispatch = useDispatch();
   const INITIAL_REGISTER_OBJ = {
     name: "",
     email: "",
     password: "",
   };
 
-  const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  const state = useSelector((state) => state.user);
+
+  const [loading, setLoading] = useState(state.loading);
+  const [errorMessage, setErrorMessage] = useState(state.errorMessage);
   const [registerObj, setRegisterObj] = useState(INITIAL_REGISTER_OBJ);
 
+  const dispatch = useDispatch();
   const submitForm = (e) => {
     e.preventDefault();
     setErrorMessage("");
@@ -33,15 +35,16 @@ function Register() {
   };
 
   const updateFormValue = ({ updateType, value }) => {
-    setErrorMessage("");
     setRegisterObj({ ...registerObj, [updateType]: value });
   };
 
-  const message = useSelector((state) => state.register.message);
-
   useEffect(() => {
-    setErrorMessage(message);
-  }, [message]);
+    setErrorMessage(state.errorMessage);
+  }, [state]);
+
+  if (!errorMessage == state.errorMessage) {
+    window.location.href = "/login";
+  }
 
   return (
     <div className="min-h-screen bg-base-200 flex items-center">

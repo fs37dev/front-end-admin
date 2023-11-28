@@ -16,7 +16,7 @@ const Documentation = lazy(() => import("./pages/Documentation"));
 initializeApp();
 
 // Check for login and initialize axios
-const token = checkAuth();
+// const token = checkAuth();
 
 function App() {
   useEffect(() => {
@@ -37,7 +37,7 @@ function App() {
           <Route path="/app/*" element={<Layout />} />
 
           {/* Navigation guard */}
-          <Route path="*" element={<Navigate to={token ? "/app/welcome" : "/login"} replace />}/>
+          {/* <Route path="*" element={<Navigate to={token ? "/app/settings-billing" : "/login"} replace />}/> */}
         </Routes>
       </Router>
     </>
