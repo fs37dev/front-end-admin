@@ -1,13 +1,16 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import LandingIntro from "./LandingIntro";
 import ErrorText from "../../components/Typography/ErrorText";
 import InputText from "../../components/Input/InputText";
+import { useDispatch, useSelector } from "react-redux";
+import { loginUser } from "./redux/loginSlice";
 
 function Login() {
+  const dispatch = useDispatch();
   const INITIAL_LOGIN_OBJ = {
+    email: "",
     password: "",
-    emailId: "",
   };
 
   const [loading, setLoading] = useState(false);
@@ -18,14 +21,12 @@ function Login() {
     e.preventDefault();
     setErrorMessage("");
 
-    if (loginObj.emailId.trim() === "") return setErrorMessage("Email Id is required! (use any value)");
+    if (loginObj.email.trim() === "") return setErrorMessage("Email is required! (use any value)");
     if (loginObj.password.trim() === "") return setErrorMessage("Password is required! (use any value)");
     else {
       setLoading(true);
-      // Call API to check user credentials and save token in localstorage
-      localStorage.setItem("token", "DumyTokenHere");
+      dispatch(loginUser(loginObj));
       setLoading(false);
-      window.location.href = "/app/welcome";
     }
   };
 
@@ -33,6 +34,12 @@ function Login() {
     setErrorMessage("");
     setLoginObj({ ...loginObj, [updateType]: value });
   };
+
+  const message = useSelector((state) => state.login.message);
+
+  useEffect(() => {
+    setErrorMessage(message);
+  }, [message]);
 
   return (
     <div className="min-h-screen bg-base-200 flex items-center">
@@ -46,11 +53,11 @@ function Login() {
             <form onSubmit={(e) => submitForm(e)}>
               <div className="mb-4">
                 <InputText
-                  type="emailId"
-                  defaultValue={loginObj.emailId}
-                  updateType="emailId"
+                  type="email"
+                  defaultValue={loginObj.email}
+                  updateType="email"
                   containerStyle="mt-4"
-                  labelTitle="Email Id"
+                  labelTitle="Email"
                   updateFormValue={updateFormValue}
                 />
 
@@ -64,13 +71,13 @@ function Login() {
                 />
               </div>
 
-              <div className="text-right text-primary">
+              {/* <div className="text-right text-primary">
                 <Link to="/forgot-password">
                   <span className="text-sm  inline-block  hover:text-primary hover:underline hover:cursor-pointer transition duration-200">
                     Forgot Password?
                   </span>
                 </Link>
-              </div>
+              </div> */}
 
               <ErrorText styleClass="mt-8">{errorMessage}</ErrorText>
               <button type="submit" className={"btn mt-2 w-full btn-primary" + (loading ? " loading" : "")}>

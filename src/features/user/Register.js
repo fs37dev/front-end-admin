@@ -1,14 +1,17 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import LandingIntro from "./LandingIntro";
 import ErrorText from "../../components/Typography/ErrorText";
 import InputText from "../../components/Input/InputText";
+import { useDispatch, useSelector } from "react-redux";
+import { registerUser } from "./redux/registerSlice";
 
 function Register() {
+  const dispatch = useDispatch();
   const INITIAL_REGISTER_OBJ = {
     name: "",
+    email: "",
     password: "",
-    emailId: "",
   };
 
   const [loading, setLoading] = useState(false);
@@ -20,13 +23,12 @@ function Register() {
     setErrorMessage("");
 
     if (registerObj.name.trim() === "") return setErrorMessage("Name is required! (use any value)");
-    if (registerObj.emailId.trim() === "") return setErrorMessage("Email Id is required! (use any value)");
+    if (registerObj.email.trim() === "") return setErrorMessage("Email is required! (use any value)");
     if (registerObj.password.trim() === "") return setErrorMessage("Password is required! (use any value)");
     else {
       setLoading(true);
-      // Call API to check user credentials and save token in localstorage
+      dispatch(registerUser(registerObj));
       setLoading(false);
-      // window.location.href = '/login'
     }
   };
 
@@ -35,7 +37,11 @@ function Register() {
     setRegisterObj({ ...registerObj, [updateType]: value });
   };
 
-  console.log(registerObj);
+  const message = useSelector((state) => state.register.message);
+
+  useEffect(() => {
+    setErrorMessage(message);
+  }, [message]);
 
   return (
     <div className="min-h-screen bg-base-200 flex items-center">
@@ -51,10 +57,11 @@ function Register() {
                 <InputText defaultValue={registerObj.name} updateType="name" containerStyle="mt-4" labelTitle="Name" updateFormValue={updateFormValue} />
 
                 <InputText
-                  defaultValue={registerObj.emailId}
-                  updateType="emailId"
+                  type="email"
+                  defaultValue={registerObj.email}
+                  updateType="email"
                   containerStyle="mt-4"
-                  labelTitle="Email Id"
+                  labelTitle="Email"
                   updateFormValue={updateFormValue}
                 />
 
