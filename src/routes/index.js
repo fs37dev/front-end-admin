@@ -47,10 +47,10 @@ const routes = [
   //   path: "/calendar",
   //   component: Calendar,
   // },
-  // {
-  //   path: "/transactions",
-  //   component: Transactions,
-  // },
+  {
+    path: "/transactions",
+    component: Transactions,
+  },
 
   // {
   //   path: "/getting-started",
