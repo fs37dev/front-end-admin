@@ -12,6 +12,7 @@ const API_URL = "https://back-end-production-a31e.up.railway.app/dashboard-api/a
 export const registerUser = createAsyncThunk("registerUser", async (registerObj) => {
   try {
     const response = await axios.post(API_URL + "register", registerObj);
+
     return await response.data;
   } catch (err) {
     return await err.response.data;
@@ -21,14 +22,14 @@ export const registerUser = createAsyncThunk("registerUser", async (registerObj)
 export const loginUser = createAsyncThunk("loginUser", async (loginObj) => {
   try {
     const response = await axios.post(API_URL + "login", loginObj);
+    console.info(response.data);
     return await response.data;
   } catch (err) {
     return await err.response.data;
   }
 });
-
 const authSlice = createSlice({
-  name: "user",
+  name: "auth",
   initialState,
   reducers: {
     addToken: (state, action) => {
@@ -65,6 +66,7 @@ const authSlice = createSlice({
         if (action.payload.status == "error") {
           state.errorMessage = action.payload.message;
         } else {
+          console.info(action.payload);
           state.errorMessage = "";
           state.token = action.payload.data.access_token;
           localStorage.setItem("token", action.payload.data.access_token);

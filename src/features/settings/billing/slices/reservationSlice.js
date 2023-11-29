@@ -4,6 +4,7 @@ import axios from "axios";
 const initialState = {
   loading: false,
   reservations: [],
+  reservation: "",
 };
 
 const API_URL = "https://back-end-production-a31e.up.railway.app/dashboard-api/reservations/";
@@ -11,6 +12,15 @@ const API_URL = "https://back-end-production-a31e.up.railway.app/dashboard-api/r
 export const getReservationList = createAsyncThunk("getReservationList", async () => {
   try {
     const response = await axios.get(API_URL);
+    return await response.data;
+  } catch (err) {
+    return await err.response.data;
+  }
+});
+
+export const getReservationDetail = createAsyncThunk("getReservationDetail", async (id) => {
+  try {
+    const response = await axios.get(`${API_URL}${id}`);
     return await response.data;
   } catch (err) {
     return await err.response.data;
@@ -31,15 +41,27 @@ const reservationSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Register User
+      // Get Reservation List
       .addCase(getReservationList.pending, (state, action) => {
         state.loading = true;
       })
       .addCase(getReservationList.fulfilled, (state, action) => {
         state.loading = false;
         state.reservations = action.payload.reservations;
+        state.reservation = "";
       })
-      .addCase(getReservationList.rejected, (state) => {
+      .addCase(getReservationList.rejected, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(getReservationDetail.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(getReservationDetail.fulfilled, (state, action) => {
+        state.loading = false;
+        state.reservation = action.payload.reservation;
+        state.reservations = [];
+      })
+      .addCase(getReservationDetail.rejected, (state, action) => {
         state.loading = true;
       });
   },
