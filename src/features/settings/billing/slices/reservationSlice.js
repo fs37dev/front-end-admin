@@ -30,11 +30,9 @@ export const getReservationDetail = createAsyncThunk("getReservationDetail", asy
 export const updateReservation = createAsyncThunk("updateReservation", async ({ id, status }) => {
   try {
     const response = await axios.put(`${API_URL}${id}`, { status: status });
-    console.info(response.data);
-    // return await response.data;
+    return await response.data;
   } catch (err) {
-    // return await err.response.data;
-    console.info(err.response.data);
+    return await err.response.data;
   }
 });
 
@@ -73,6 +71,16 @@ const reservationSlice = createSlice({
         state.reservations = [];
       })
       .addCase(getReservationDetail.rejected, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(updateReservation.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(updateReservation.fulfilled, (state, action) => {
+        state.loading = false;
+        window.location.reload();
+      })
+      .addCase(updateReservation.rejected, (state, action) => {
         state.loading = true;
       });
   },
