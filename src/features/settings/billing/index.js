@@ -34,7 +34,7 @@ function Billing() {
           <table className="table w-full">
             <thead>
               <tr>
-                <th>Invoice No</th>
+                <th>Reservation ID</th>
                 <th>Customer name</th>
                 <th>Reservation Date</th>
                 <th>Status</th>
