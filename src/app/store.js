@@ -12,7 +12,7 @@ const combinedReducer = {
   rightDrawer: rightDrawerSlice,
   modal: modalSlice,
   lead: leadsSlice,
-  user: authSlice,
+  auth: authSlice,
   reservations: reservationSlices,
   user: userSlice,
 };

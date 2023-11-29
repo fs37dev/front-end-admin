@@ -13,7 +13,7 @@ function Register() {
     password: "",
   };
 
-  const state = useSelector((state) => state.user);
+  const state = useSelector((state) => state.auth);
 
   const [loading, setLoading] = useState(state.loading);
   const [errorMessage, setErrorMessage] = useState(state.errorMessage);
