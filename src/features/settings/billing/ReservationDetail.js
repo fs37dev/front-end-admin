@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import TitleCard from "../../../components/Cards/TitleCard";
 import { showNotification } from "../../common/headerSlice";
-import { getReservationDetail, getReservationList } from "../billing/slices/reservationSlice";
+import { getReservationDetail, getReservationList, updateReservation } from "../billing/slices/reservationSlice";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import InputText from "../../../components/Input/InputText";
 import TextAreaInput from "../../../components/Input/TextAreaInput";
@@ -21,6 +21,7 @@ function ReservationDetail() {
   const getPaymentStatus = (status) => {
     if (status === "Approved") return <div className="badge badge-success">{status}</div>;
     if (status === "Pending") return <div className="badge badge-warning">{status}</div>;
+    if (status === "Rejected") return <div className="badge badge-error">{status}</div>;
     else return <div className="badge badge-ghost">{status}</div>;
   };
 
@@ -30,11 +31,11 @@ function ReservationDetail() {
 
   const handleSubmitForm = (e) => {
     e.preventDefault();
-    console.info(e);
+    dispatch(updateReservation({ id: params.id, status: statusValue }));
   };
 
-  const handleStatusChange = () => {
-    setStatusValue();
+  const handleStatusChange = (e) => {
+    setStatusValue(e.target.value);
   };
 
   return (
@@ -53,14 +54,19 @@ function ReservationDetail() {
               </div>
 
               <div>
-                <p className="text-sm mb-2">Status</p>
-                <select className="select select-primary w-full max-w-xs" id="status" value={statusValue} onChange={(e) => handleStatusChange(e.target.value)}>
-                  <option disabled selected value={reservation.status}>
-                    {reservation.status}
-                  </option>
-                  {reservation.status == "Pending" && <option value="Approved">Approved</option>}
-                  {reservation.status == "Pending" && <option value="Rejected">Rejected</option>}
-                </select>
+                <div className="text-sm mb-2">Status</div>
+                <div className="flex flex-col">
+                  <select
+                    className="select select-primary w-full max-w-xs mb-3"
+                    value={statusValue}
+                    onChange={handleStatusChange}
+                    disabled={reservation.status == "Approved" || reservation.status == "Rejected"}>
+                    <option value="">--Update--</option>
+                    <option value="Approved">Approved</option>
+                    <option value="Rejected">Rejected</option>
+                  </select>
+                  {getPaymentStatus(reservation.status)}
+                </div>
               </div>
 
               <div>
@@ -124,7 +130,9 @@ function ReservationDetail() {
             </div>
 
             <div className="mt-16">
-              <button className="btn btn-primary float-right">Update</button>
+              <button className="btn btn-primary float-right" disabled={!statusValue}>
+                Update
+              </button>
             </div>
           </form>
         )}
